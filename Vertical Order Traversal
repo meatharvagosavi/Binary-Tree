@@ -37,7 +37,7 @@ public:
             }
         }
 
-        vector<vector<int>> ans;
+        vector<vector<int>> res;
         for(auto p : nodes)
         {
             vector <int> col;
@@ -45,8 +45,8 @@ public:
             {
                 col.insert(col.end(), q.second.begin(),q.second.end());
             }
-            ans.push_back(col);
+            res.push_back(col);
         }
-        return ans;
+        return res;
     }
 };
