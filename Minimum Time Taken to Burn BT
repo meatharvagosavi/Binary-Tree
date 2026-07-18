@@ -1,0 +1,46 @@
+class Solution {
+    int maxMinutes = 0;
+
+    int dfs(TreeNode* root, int start) {
+        if (root == nullptr) {
+            return 0; // Base case: depth is 0
+        }
+
+        int leftDepth = dfs(root->left, start);
+        int rightDepth = dfs(root->right, start);
+
+        // CASE 1: We found the start node
+        if (root->val == start) {
+            // The time to infect subtrees below the start node is the max of their depths
+            maxMinutes = max(maxMinutes, max(leftDepth, rightDepth));
+            
+            // Return -1 to tell the parent: "The start node is 1 step below me"
+            return -1; 
+        }
+        // CASE 2: The start node is NOT in this subtree
+        else if (leftDepth >= 0 && rightDepth >= 0) {
+            // Just return standard depth
+            return max(leftDepth, rightDepth) + 1;
+        }
+        // CASE 3: The start node IS in one of my subtrees (indicated by a negative return value)
+        else {
+            // Find which side has the negative value (the distance to start node)
+            int distanceToStart = abs(leftDepth < 0 ? leftDepth : rightDepth);
+            
+            // The other side is a normal subtree (depth)
+            int otherSubtreeDepth = leftDepth < 0 ? rightDepth : leftDepth;
+            
+            // Calculate max time for infection to cross through this parent to the other branch
+            maxMinutes = max(maxMinutes, distanceToStart + otherSubtreeDepth);
+            
+            // Bubble the distance back up to the next parent
+            return -1 * (distanceToStart + 1);
+        }
+    }
+
+public:
+    int amountOfTime(TreeNode* root, int start) {
+        dfs(root, start);
+        return maxMinutes;
+    }
+};
