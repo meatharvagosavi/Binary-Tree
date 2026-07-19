@@ -1,0 +1,50 @@
+/* Definition for Node
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+}; */
+
+class Solution {
+  private:
+    // Helper function using DFS and backtracking
+    void findPaths(Node* root, vector<int>& current_path, vector<vector<int>>& all_paths) {
+        if (!root) return;
+        
+        // 1. Include the current node in the path
+        current_path.push_back(root->data);
+        
+        // 2. If it's a leaf node, add the complete path to our final answer
+        if (!root->left && !root->right) {
+            all_paths.push_back(current_path);
+        } else {
+            // 3. If not a leaf, continue exploring left then right
+            findPaths(root->left, current_path, all_paths);
+            findPaths(root->right, current_path, all_paths);
+        }
+        
+        // 4. Backtrack: remove the current node before going back up the tree
+        current_path.pop_back();
+    }
+    
+  public:
+    vector<vector<int>> paths(Node* root) {
+        vector<vector<int>> all_paths;
+        vector<int> current_path;
+        
+        // Handle edge case of an empty tree
+        if (root == nullptr) {
+            return all_paths; 
+        }
+        
+        // Start the DFS from the root
+        findPaths(root, current_path, all_paths);
+        
+        return all_paths;
+    }
+};
